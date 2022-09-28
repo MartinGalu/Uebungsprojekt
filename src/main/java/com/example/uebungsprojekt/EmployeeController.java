@@ -32,8 +32,6 @@ public class EmployeeController {
         return empRepo.updateEmployee(id, emp);
     }
 
-
-
     @GetMapping(path = "/all")
     public @ResponseBody Iterable<Employee> getAllEmps(){
         return empRepo.findAll();

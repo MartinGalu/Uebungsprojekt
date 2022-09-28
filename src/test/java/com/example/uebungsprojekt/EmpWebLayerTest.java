@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,5 +69,11 @@ public class EmpWebLayerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(chris.getName()));
 
+    }
+
+    @Test
+    public void removeEmp() throws Exception{
+        mockMvc.perform(delete("/emp/" + UUID.randomUUID()))
+                .andExpect(status().isOk());
     }
 }
