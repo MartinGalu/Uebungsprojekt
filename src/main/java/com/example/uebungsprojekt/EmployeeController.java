@@ -1,12 +1,9 @@
 package com.example.uebungsprojekt;
 
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(path = "/emp")
@@ -19,25 +16,29 @@ public class EmployeeController {
     }
 
 
-    @PostMapping(path = "/add")
-    public @ResponseBody String addNewEmp(@RequestParam String name, @RequestParam List<String> roles) {
+    @PostMapping()
+    @ResponseBody Employee addNewEmp(@RequestBody Employee emp) {
         // Todo: replace with proper constructor paradigma
-        Employee emp = new Employee();
-        emp.setName(name);
-        emp.setRoles(new ArrayList<>(roles));
-        empRepo.save(emp);
-        return "Saved";
+        return empRepo.save(emp);
     }
 
-    @DeleteMapping(path="/delete")
-    public @ResponseBody int removeEmp(@RequestParam String name){
-        Optional<Employee> emp = empRepo.findOne(Example.of(new Employee(name)));
-        if(emp.isPresent()){
-            empRepo.delete(emp.get());
-            return 200;
-        }
-        return 400;
+    @DeleteMapping(path="/{id}")
+    @ResponseBody void removeEmp(@PathVariable UUID id){
+        empRepo.deleteById(id);
     }
+
+    @PutMapping(path = "/{id}")
+    public @ResponseBody Employee updateEmp(@PathVariable UUID id,@RequestBody Employee emp) {
+        return empRepo.findById(id).map(employee -> {
+            employee.setName(emp.getName());
+            employee.setRoles(emp.getRoles());
+            return empRepo.save(emp);
+        }).orElseGet(() -> {
+            emp.setId(id);
+            return empRepo.save(emp);
+        });
+    }
+
 
     @GetMapping(path = "/all")
     public @ResponseBody Iterable<Employee> getAllEmps(){
