@@ -29,15 +29,9 @@ public class EmployeeController {
 
     @PutMapping(path = "/{id}")
     public @ResponseBody Employee updateEmp(@PathVariable UUID id,@RequestBody Employee emp) {
-        return empRepo.findById(id).map(employee -> {
-            employee.setName(emp.getName());
-            employee.setRoles(emp.getRoles());
-            return empRepo.save(emp);
-        }).orElseGet(() -> {
-            emp.setId(id);
-            return empRepo.save(emp);
-        });
+        return empRepo.updateEmployee(id, emp);
     }
+
 
 
     @GetMapping(path = "/all")

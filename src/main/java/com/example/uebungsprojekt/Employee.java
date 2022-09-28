@@ -29,23 +29,26 @@ public class Employee {
         return id;
     }
 
-    public void setId(UUID id) {
+    public Employee setId(UUID id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Employee setName(String name) {
         this.name = name;
+        return this;
     }
 
     public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public Employee setRoles(List<String> roles) {
         this.roles = roles;
+        return this;
     }
 }

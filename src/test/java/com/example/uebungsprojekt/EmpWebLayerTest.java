@@ -13,9 +13,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,10 +35,9 @@ public class EmpWebLayerTest {
         Employee chris = new Employee("Chris the Accountant");
         chris.setRoles(Collections.singletonList("Accountant"));
 
-        doReturn(List.of(chris)).when(empRepo).findAll();
+        when(empRepo.findAll()).thenReturn(List.of(chris));
 
-
-        this.mockMvc.perform(get("/emp/all")).andDo(print())
+        mockMvc.perform(get("/emp/all")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
@@ -51,5 +51,22 @@ public class EmpWebLayerTest {
                 .content(content);
 
         this.mockMvc.perform(request).andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateEmp() throws Exception {
+        Employee chris = new Employee().setName("Chris").setRoles(List.of("Accountant"));
+        String content = new Gson().toJson(chris);
+
+        MockHttpServletRequestBuilder request = put("/emp/" + chris.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        when(empRepo.updateEmployee(eq(chris.getId()), any())).thenReturn(chris);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(chris.getName()));
+
     }
 }
