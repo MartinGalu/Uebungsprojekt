@@ -1,13 +1,22 @@
 package com.example.uebungsprojekt;
 
 import com.google.gson.Gson;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,15 +25,24 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(EmployeeController.class)
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class EmpWebLayerTest {
 
-    @Autowired
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentationExtension){
+       this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+               .apply(documentationConfiguration(restDocumentationExtension))
+               .build();
+    }
+
     private MockMvc mockMvc;
 
     @MockBean
@@ -39,7 +57,8 @@ public class EmpWebLayerTest {
 
         mockMvc.perform(get("/emp/all")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("employees"));
     }
 
     @Test
