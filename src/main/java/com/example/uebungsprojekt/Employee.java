@@ -1,15 +1,22 @@
 package com.example.uebungsprojekt;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 public class Employee {
 
-    public Employee(){
+    public Employee() {
         this.id = UUID.randomUUID();
+    }
+
+    public Employee(String name){
+        this();
+        this.name = name;
     }
 
     @Id
@@ -17,13 +24,13 @@ public class Employee {
 
     private String name;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private Company company;
+
     @ElementCollection
     private List<String> roles = new ArrayList<>();
 
-    public Employee(String name) {
-        super();
-        this.name = name;
-    }
 
     public UUID getId() {
         return id;
@@ -47,8 +54,38 @@ public class Employee {
         return roles;
     }
 
-    public Employee setRoles(List<String> roles) {
-        this.roles = roles;
+    public Employee setRoles(List<String> roles) throws RolesNotFoundException {
+        if (new HashSet<>(company.getRoles()).containsAll(roles)) {
+            this.roles = roles;
+        } else {
+            throw new RolesNotFoundException();
+        }
         return this;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public Employee setCompany(Company company) {
+        this.company = company;
+        return this;
+    }
+
+    public Employee joinCompany(Company comp, String role) throws RolesNotFoundException {
+        if (comp.getRoles().contains(role)) {
+            setCompany(comp);
+            roles.add(role);
+        } else {
+            throw new RolesNotFoundException();
+        }
+
+        return this;
+    }
+
+    static class RolesNotFoundException extends Exception{
+        RolesNotFoundException(){
+
+        }
     }
 }

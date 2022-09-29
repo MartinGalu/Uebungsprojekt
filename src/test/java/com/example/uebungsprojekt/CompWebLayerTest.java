@@ -61,8 +61,8 @@ public class CompWebLayerTest {
     @Test
     public void getCompanyEmployees() throws Exception{
         ArrayList<Employee> listOfEmps = new ArrayList<>();
-        listOfEmps.add(new Employee());
-        listOfEmps.add(new Employee());
+        listOfEmps.add(new Employee("Chris"));
+        listOfEmps.add(new Employee("Anika"));
 
 
         Company comp = new Company().setEmployees(listOfEmps);

@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,8 +32,8 @@ public class EmpWebLayerTest {
 
     @Test
     public void getAllEmps() throws Exception{
-        Employee chris = new Employee("Chris the Accountant");
-        chris.setRoles(Collections.singletonList("Accountant"));
+        Company comp = new Company().setRoles(List.of("Accountant"));
+        Employee chris = new Employee("Chris the Accountant").joinCompany(comp, comp.getRoles().get(0));
 
         when(empRepo.findAll()).thenReturn(List.of(chris));
 
@@ -45,7 +44,10 @@ public class EmpWebLayerTest {
 
     @Test
     public void addEmp() throws Exception {
-        String content = new Gson().toJson(new Employee("Test"));
+        Company comp = new Company().setRoles(List.of("Accountant"));
+        Employee chris = new Employee("Chris the Accountant").joinCompany(comp, comp.getRoles().get(0));
+
+        String content = new Gson().toJson(chris);
 
         MockHttpServletRequestBuilder request = post("/emp")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -56,7 +58,8 @@ public class EmpWebLayerTest {
 
     @Test
     public void updateEmp() throws Exception {
-        Employee chris = new Employee().setName("Chris").setRoles(List.of("Accountant"));
+        Company comp = new Company().setRoles(List.of("Accountant"));
+        Employee chris = new Employee("Chris the Accountant").joinCompany(comp, comp.getRoles().get(0));
         String content = new Gson().toJson(chris);
 
         MockHttpServletRequestBuilder request = put("/emp/" + chris.getId())

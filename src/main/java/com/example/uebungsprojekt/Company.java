@@ -14,7 +14,12 @@ public class Company {
 
     private String countryCode;
 
+    @OneToMany
+    @JoinColumn(name = "employee_id")
     private List<Employee> employees = new ArrayList<>();
+
+    @ElementCollection
+    private List<String> roles = new ArrayList<>();
 
     public Company(){
         this.id = UUID.randomUUID();
@@ -48,14 +53,21 @@ public class Company {
     }
 
 
-    @OneToMany
-    @JoinColumn(name = "employee_id")
     public List<Employee> getEmployees() {
         return employees;
     }
 
     public Company setEmployees(List<Employee> employees) {
         this.employees = employees;
+        return this;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public Company setRoles(List<String> roles) {
+        this.roles = roles;
         return this;
     }
 }
