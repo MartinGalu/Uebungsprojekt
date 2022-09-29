@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +56,22 @@ public class CompWebLayerTest {
         mockMvc.perform(get("/comp/" + comp.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vatId").value(comp.getVatId()));
+    }
+
+    @Test
+    public void getCompanyEmployees() throws Exception{
+        ArrayList<Employee> listOfEmps = new ArrayList<>();
+        listOfEmps.add(new Employee());
+        listOfEmps.add(new Employee());
+
+
+        Company comp = new Company().setEmployees(listOfEmps);
+
+        when(compRepo.findById(comp.getId())).thenReturn(Optional.of(comp));
+
+        mockMvc.perform(get("/comp/" + comp.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.employees").value(hasSize(2)));
     }
 
 

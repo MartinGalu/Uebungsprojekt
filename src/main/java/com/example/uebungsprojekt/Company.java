@@ -1,7 +1,8 @@
 package com.example.uebungsprojekt;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,6 +13,8 @@ public class Company {
     private String vatId; //TODO: Can be changed to VatID object instead i suppose
 
     private String countryCode;
+
+    private List<Employee> employees = new ArrayList<>();
 
     public Company(){
         this.id = UUID.randomUUID();
@@ -44,4 +47,15 @@ public class Company {
         return this;
     }
 
+
+    @OneToMany
+    @JoinColumn(name = "employee_id")
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public Company setEmployees(List<Employee> employees) {
+        this.employees = employees;
+        return this;
+    }
 }
