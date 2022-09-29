@@ -47,4 +47,15 @@ public class CompWebLayerTest {
 
     }
 
+    @Test
+    public void getCompanyVatId() throws Exception{
+        Company comp = new Company().setVatId("12345").setCountryCode("AT");
+        when(compRepo.findById(comp.getId())).thenReturn(Optional.of(comp));
+
+        mockMvc.perform(get("/comp/" + comp.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.vatId").value(comp.getVatId()));
+    }
+
+
 }
