@@ -15,7 +15,7 @@ public class Company {
     private String countryCode;
 
     @OneToMany
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     private List<Employee> employees = new ArrayList<>();
 
     @ElementCollection

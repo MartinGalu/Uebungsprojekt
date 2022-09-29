@@ -25,6 +25,7 @@ public class Employee {
     private String name;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     @NotNull
     private Company company;
 
