@@ -7,6 +7,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
@@ -33,6 +34,17 @@ public class CompWebLayerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    public void getCompany() throws Exception{
+        Company comp = new Company();
+        when(compRepo.findById(comp.getId())).thenReturn(Optional.of(comp));
+
+        mockMvc.perform(get("/comp/" + comp.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(comp.getId().toString()));
+
     }
 
 }

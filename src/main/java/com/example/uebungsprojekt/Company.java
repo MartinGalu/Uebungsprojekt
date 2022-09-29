@@ -2,16 +2,24 @@ package com.example.uebungsprojekt;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.rmi.server.UID;
+import java.util.UUID;
 
 @Entity
 public class Company {
 
     @Id
-    UID vatId;
+    private UUID id;
 
     public Company(){
-        this.vatId = new UID();
+        this.id = UUID.randomUUID();
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public Company setId(UUID vatId) {
+        this.id = vatId;
+        return this;
+    }
 }
