@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CompanyController.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+@Import(CompanyModelAssembler.class)
 public class CompWebLayerTest {
 
 
@@ -52,7 +54,7 @@ public class CompWebLayerTest {
         mockMvc.perform(get("/comp/"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$._embedded.companyList", hasSize(1)))
                 .andDo(document("companies"));
     }
 

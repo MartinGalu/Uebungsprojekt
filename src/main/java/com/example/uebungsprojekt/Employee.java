@@ -94,10 +94,11 @@ public class Employee {
 
     @Override
     public String toString() {
+        String company = getCompany() != null ? getCompany().getVatId() : "";
         return "Employee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", company=" + company.getId() +
+                ", company=" + company +
                 ", roles=" + roles +
                 '}';
     }
