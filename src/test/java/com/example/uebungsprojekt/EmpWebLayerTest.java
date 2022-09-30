@@ -1,11 +1,9 @@
 package com.example.uebungsprojekt;
 
 import com.google.gson.Gson;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -13,7 +11,6 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -72,7 +69,9 @@ public class EmpWebLayerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
 
-        this.mockMvc.perform(request).andExpect(status().isOk());
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(document("employee/add"));
     }
 
     @Test
@@ -89,13 +88,15 @@ public class EmpWebLayerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(chris.getName()));
+                .andExpect(jsonPath("$.name").value(chris.getName()))
+                .andDo(document("employee/update"));
 
     }
 
     @Test
     public void removeEmp() throws Exception{
         mockMvc.perform(delete("/emp/" + UUID.randomUUID()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("employee/remove"));
     }
 }

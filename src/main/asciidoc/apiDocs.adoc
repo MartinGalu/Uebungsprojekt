@@ -1,1 +1,6 @@
-include::{snippets}/employees/curl-request.adoc
+operation::companies[]
+operation::company[]
+operation::employees[]
+operation::employee/add[]
+operation::employee/update[]
+operation::employee/remove[]
