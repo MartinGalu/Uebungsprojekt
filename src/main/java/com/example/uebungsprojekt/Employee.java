@@ -1,7 +1,6 @@
 package com.example.uebungsprojekt;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,9 +23,8 @@ public class Employee {
 
     private String name;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id", insertable = false, updatable = false)
-    @NotNull
+    @ManyToOne
+    @JoinColumn(name="company_id", nullable = true)
     private Company company;
 
     @ElementCollection

@@ -14,8 +14,7 @@ public class Company {
 
     private String countryCode;
 
-    @OneToMany
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    @OneToMany(mappedBy = "company")
     private List<Employee> employees = new ArrayList<>();
 
     @ElementCollection
