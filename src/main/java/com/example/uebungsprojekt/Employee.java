@@ -1,10 +1,7 @@
 package com.example.uebungsprojekt;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class Employee {
@@ -80,6 +77,29 @@ public class Employee {
         }
 
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id.equals(employee.id) && Objects.equals(name, employee.name) && Objects.equals(company, employee.company) && Objects.equals(roles, employee.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, company, roles);
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", company=" + company.getId() +
+                ", roles=" + roles +
+                '}';
     }
 
     static class RolesNotFoundException extends Exception{

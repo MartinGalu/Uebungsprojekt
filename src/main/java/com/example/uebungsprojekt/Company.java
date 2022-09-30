@@ -3,6 +3,7 @@ package com.example.uebungsprojekt;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -68,5 +69,18 @@ public class Company {
     public Company setRoles(List<String> roles) {
         this.roles = roles;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return id.equals(company.id) && Objects.equals(vatId, company.vatId) && Objects.equals(countryCode, company.countryCode) && Objects.equals(employees, company.employees) && Objects.equals(roles, company.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, vatId, countryCode, employees, roles);
     }
 }
