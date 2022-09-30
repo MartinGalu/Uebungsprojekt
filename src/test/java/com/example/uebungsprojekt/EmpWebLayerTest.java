@@ -55,7 +55,7 @@ public class EmpWebLayerTest {
 
         mockMvc.perform(get("/emp/")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$._embedded.employeeList", hasSize(1)))
                 .andDo(document("employees"));
     }
 
