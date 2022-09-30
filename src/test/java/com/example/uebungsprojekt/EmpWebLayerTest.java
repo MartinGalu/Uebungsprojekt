@@ -87,6 +87,8 @@ public class EmpWebLayerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
 
+        when(empRepo.save(chris)).thenReturn(chris);
+
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andDo(document("employee/add"));

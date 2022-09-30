@@ -37,9 +37,8 @@ public class EmployeeController {
     }
 
     @PostMapping()
-    Employee addNewEmp(@RequestBody Employee emp) {
-        // Todo: replace with proper constructor paradigma
-        return empRepo.save(emp);
+    EntityModel<Employee> addNewEmp(@RequestBody Employee emp) {
+        return assembler.toModel(empRepo.save(emp));
     }
 
     @DeleteMapping(path="/{id}")
@@ -48,8 +47,8 @@ public class EmployeeController {
     }
 
     @PutMapping(path = "/{id}")
-    public Employee updateEmp(@PathVariable UUID id,@RequestBody Employee emp) {
-        return empRepo.updateEmployee(id, emp);
+    public EntityModel<Employee> updateEmp(@PathVariable UUID id, @RequestBody Employee emp) {
+        return assembler.toModel(empRepo.updateEmployee(id, emp));
     }
 
 }
