@@ -1,11 +1,10 @@
 package com.example.uebungsprojekt;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping(path = "/emp")
 public class EmployeeController {
 
@@ -15,27 +14,30 @@ public class EmployeeController {
         this.empRepo = empRepo;
     }
 
+    @GetMapping()
+    public Iterable<Employee> getAllEmps(){
+        return empRepo.findAll();
+    }
+
+    @GetMapping("/{id}")
+    Employee getEmp(@PathVariable UUID id) {
+        return empRepo.findById(id).orElseThrow();
+    }
 
     @PostMapping()
-    @ResponseBody Employee addNewEmp(@RequestBody Employee emp) {
+    Employee addNewEmp(@RequestBody Employee emp) {
         // Todo: replace with proper constructor paradigma
         return empRepo.save(emp);
     }
 
     @DeleteMapping(path="/{id}")
-    @ResponseBody void removeEmp(@PathVariable UUID id){
+    void removeEmp(@PathVariable UUID id){
         empRepo.deleteById(id);
     }
 
     @PutMapping(path = "/{id}")
-    public @ResponseBody Employee updateEmp(@PathVariable UUID id,@RequestBody Employee emp) {
+    public Employee updateEmp(@PathVariable UUID id,@RequestBody Employee emp) {
         return empRepo.updateEmployee(id, emp);
     }
-
-    @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Employee> getAllEmps(){
-        return empRepo.findAll();
-    }
-
 
 }

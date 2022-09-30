@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -52,9 +53,24 @@ public class EmpWebLayerTest {
 
         when(empRepo.findAll()).thenReturn(List.of(chris));
 
-        mockMvc.perform(get("/emp/all")).andDo(print())
+        mockMvc.perform(get("/emp/")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("employees"));
+    }
+
+
+    @Test
+    public void getSingleEmp() throws Exception{
+        Employee chris = new Employee("Chris");
+
+        when(empRepo.findById(chris.getId())).thenReturn(Optional.of(chris));
+
+        mockMvc.perform(get("/emp/" + chris.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(chris.getId().toString()))
+                .andExpect(jsonPath("$.name").value(chris.getName()))
                 .andDo(document("employees"));
     }
 
