@@ -15,17 +15,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping(path = "/emp")
 public class EmployeeController {
-
     private final EmployeeRepository empRepo;
+    private final EmployeeModelAssembler assembler;
 
-    public EmployeeController(EmployeeRepository empRepo) {
+    public EmployeeController(EmployeeRepository empRepo, EmployeeModelAssembler assembler) {
         this.empRepo = empRepo;
+        this.assembler = assembler;
     }
 
     @GetMapping()
     public CollectionModel<EntityModel<Employee>> getAllEmps(){
-        List<EntityModel<Employee>> employees = empRepo.findAll().stream().map(employee -> EntityModel.of(employee, linkTo(methodOn(EmployeeController.class).getEmp(employee.getId())).withSelfRel(), linkTo(methodOn(EmployeeController.class).getAllEmps()).withRel("employees"))).collect(Collectors.toList());
-
+        List<EntityModel<Employee>> employees = empRepo.findAll().stream().map(assembler::toModel).collect(Collectors.toList());
 
         return CollectionModel.of(employees, linkTo(methodOn(EmployeeController.class).getAllEmps()).withSelfRel());
     }
@@ -33,8 +33,7 @@ public class EmployeeController {
     @GetMapping("/{id}")
     EntityModel<Employee> getEmp(@PathVariable UUID id) {
         Employee employee = empRepo.findById(id).orElseThrow();
-
-        return EntityModel.of(employee, linkTo(methodOn(EmployeeController.class).getEmp(id)).withSelfRel(), linkTo(methodOn(EmployeeController.class).getAllEmps()).withRel("employees"));
+        return assembler.toModel(employee);
     }
 
     @PostMapping()
