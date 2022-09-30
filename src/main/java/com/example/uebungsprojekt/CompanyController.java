@@ -1,31 +1,38 @@
 package com.example.uebungsprojekt;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
-@Controller
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@RestController
 @RequestMapping(path = "/comp")
 public class CompanyController {
 
+    private final CompanyModelAssembler assembler;
+
     private final CompanyRepositoy compRepo;
 
-    public CompanyController(CompanyRepositoy compRepo) {
+    public CompanyController(CompanyModelAssembler assembler, CompanyRepositoy compRepo) {
+        this.assembler = assembler;
         this.compRepo = compRepo;
     }
 
     @GetMapping("/")
-    public @ResponseBody Iterable<Company> getCompanies(){
-       return compRepo.findAll();
+    public CollectionModel<EntityModel<Company>> getCompanies(){
+        List<EntityModel<Company>> companies = compRepo.findAll().stream().map(assembler::toModel).toList();
+
+        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).getCompanies()).withSelfRel());
     }
 
     @GetMapping("/{vatId}")
-    public @ResponseBody Company getCompany(@PathVariable UUID vatId) {
-        return compRepo.findById(vatId).orElseThrow();
+    public EntityModel<Company> getCompany(@PathVariable UUID vatId) {
+        return assembler.toModel(compRepo.findById(vatId).orElseThrow());
     }
 
 }
